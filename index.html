@@ -2,40 +2,63 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <title>神経衰弱</title>
+  <title>画像神経衰弱</title>
   <style>
     body { font-family: sans-serif; text-align: center; }
-    .grid { display: grid; grid-template-columns: repeat(4, 80px); gap: 10px; justify-content: center; margin-top: 20px; }
+    .grid { display: grid; grid-template-columns: repeat(4, 100px); gap: 10px; justify-content: center; margin-top: 20px; }
     .card {
-      width: 80px; height: 80px;
-      background: lightgray; font-size: 32px;
-      display: flex; justify-content: center; align-items: center;
-      cursor: pointer; user-select: none;
+      width: 100px; height: 100px;
+      background: lightgray;
+      position: relative;
+      cursor: pointer;
     }
-    .matched { background: lightgreen; cursor: default; }
+    .card img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: none;
+    }
+    .card.revealed img, .card.matched img {
+      display: block;
+    }
+    .card.matched {
+      border: 3px solid lightgreen;
+      cursor: default;
+    }
   </style>
 </head>
 <body>
-  <h1>神経衰弱</h1>
+  <h1>画像神経衰弱</h1>
   <div class="grid" id="game"></div>
 
   <script>
-    const symbols = ['🍎','🍊','🍇','🍓','🍎','🍊','🍇','🍓'];
-    const shuffled = symbols.sort(() => Math.random() - 0.5);
-    const game = document.getElementById('game');
+    // カードのペア定義（画像ペアをグループIDで紐付け）
+    const cards = [
+      { img: 'images/a1.png', group: 'A' },
+      { img: 'images/a2.png', group: 'A' },
+      { img: 'images/b1.png', group: 'B' },
+      { img: 'images/b2.png', group: 'B' },
+    ];
 
+    // ペアを2回ずつ入れて8枚にする
+    const fullDeck = [...cards];
+    const shuffled = fullDeck.sort(() => Math.random() - 0.5);
+
+    const game = document.getElementById('game');
     let first = null, second = null, lock = false;
 
-    shuffled.forEach((symbol, index) => {
+    shuffled.forEach((cardData, index) => {
       const card = document.createElement('div');
       card.className = 'card';
-      card.dataset.index = index;
-      card.dataset.symbol = symbol;
-      card.textContent = '';
-      card.addEventListener('click', () => {
-        if (lock || card.classList.contains('matched') || card === first) return;
+      card.dataset.group = cardData.group;
 
-        card.textContent = symbol;
+      const img = document.createElement('img');
+      img.src = cardData.img;
+      card.appendChild(img);
+
+      card.addEventListener('click', () => {
+        if (lock || card.classList.contains('matched') || card.classList.contains('revealed')) return;
+
+        card.classList.add('revealed');
 
         if (!first) {
           first = card;
@@ -44,12 +67,12 @@
           lock = true;
 
           setTimeout(() => {
-            if (first.dataset.symbol === second.dataset.symbol) {
+            if (first.dataset.group === second.dataset.group) {
               first.classList.add('matched');
               second.classList.add('matched');
             } else {
-              first.textContent = '';
-              second.textContent = '';
+              first.classList.remove('revealed');
+              second.classList.remove('revealed');
             }
             first = null;
             second = null;
@@ -57,6 +80,7 @@
           }, 1000);
         }
       });
+
       game.appendChild(card);
     });
   </script>
