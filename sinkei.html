@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>神経衰弱</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; }
+    .grid { display: grid; grid-template-columns: repeat(4, 80px); gap: 10px; justify-content: center; margin-top: 20px; }
+    .card {
+      width: 80px; height: 80px;
+      background: lightgray; font-size: 32px;
+      display: flex; justify-content: center; align-items: center;
+      cursor: pointer; user-select: none;
+    }
+    .matched { background: lightgreen; cursor: default; }
+  </style>
+</head>
+<body>
+  <h1>神経衰弱</h1>
+  <div class="grid" id="game"></div>
+
+  <script>
+    const symbols = ['🍎','🍊','🍇','🍓','🍎','🍊','🍇','🍓'];
+    const shuffled = symbols.sort(() => Math.random() - 0.5);
+    const game = document.getElementById('game');
+
+    let first = null, second = null, lock = false;
+
+    shuffled.forEach((symbol, index) => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.dataset.index = index;
+      card.dataset.symbol = symbol;
+      card.textContent = '';
+      card.addEventListener('click', () => {
+        if (lock || card.classList.contains('matched') || card === first) return;
+
+        card.textContent = symbol;
+
+        if (!first) {
+          first = card;
+        } else {
+          second = card;
+          lock = true;
+
+          setTimeout(() => {
+            if (first.dataset.symbol === second.dataset.symbol) {
+              first.classList.add('matched');
+              second.classList.add('matched');
+            } else {
+              first.textContent = '';
+              second.textContent = '';
+            }
+            first = null;
+            second = null;
+            lock = false;
+          }, 1000);
+        }
+      });
+      game.appendChild(card);
+    });
+  </script>
+</body>
+</html>
