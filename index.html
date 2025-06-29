@@ -12,11 +12,22 @@
       position: relative;
       cursor: pointer;
     }
-    .card img {
-      width: 100%; height: 100%;
-      object-fit: cover;
-      display: none;
-    }
+    .card {
+  width: 100px;
+  height: 100px;
+  background: black; /* 黒背景を指定 */
+  position: relative;
+  cursor: pointer;
+}
+
+.card img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;         /* アスペクト比を保って全体表示 */
+  background-color: black;    /* 黒で塗る（念のため） */
+  display: none;
+}
+
     .card.revealed img, .card.matched img {
       display: block;
     }
