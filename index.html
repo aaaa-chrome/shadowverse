@@ -1,38 +1,55 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
   <meta charset="UTF-8" />
-  <title>画像神経衰弱</title>
+  <title>シャドバ神経衰弱</title>
   <style>
-    body { font-family: sans-serif; text-align: center; }
-    .grid { display: grid; grid-template-columns: repeat(4, 300px); gap: 10px; justify-content: center; margin-top: 20px; }
+    body {
+      font-family: sans-serif;
+      text-align: center;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 300px);
+      gap: 10px;
+      justify-content: center;
+      margin-top: 20px;
+    }
 
     .card {
-  width: 300px;
-  height: 300px;
-  position: relative;
-  cursor: pointer;
-}
+      width: 300px;
+      height: 300px;
+      background: lightgray;
+      position: relative;
+      cursor: pointer;
+    }
 
-.card img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;         /* アスペクト比を保って全体表示 */
-  background-color: black;    /* 黒で塗る（念のため） */
-  display: none;
-}
+    .card img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      /* アスペクト比を保って全体表示 */
+      background-color: black;
+      /* 黒で塗る（念のため） */
+      display: none;
+    }
 
-    .card.revealed img, .card.matched img {
+    .card.revealed img,
+    .card.matched img {
       display: block;
     }
+
     .card.matched {
       border: 3px solid lightgreen;
       cursor: default;
     }
   </style>
 </head>
+
 <body>
-  <h1>画像神経衰弱</h1>
+  <h1>シャドバ神経衰弱</h1>
   <div class="grid" id="game"></div>
 
   <script>
@@ -90,4 +107,5 @@
     });
   </script>
 </body>
+
 </html>
