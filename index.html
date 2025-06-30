@@ -2,110 +2,109 @@
 <html lang="ja">
 
 <head>
-  <meta charset="UTF-8" />
-  <title>シャドバ神経衰弱</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      text-align: center;
-    }
+    <meta charset="UTF-8" />
+    <title>神経衰弱（画像ペア）</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            text-align: center;
+            background: #222;
+            color: #fff;
+        }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(4, 300px);
-      gap: 10px;
-      justify-content: center;
-      margin-top: 20px;
-    }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            justify-content: center;
+            margin: 20px auto;
+            max-width: 600px;
+        }
 
-    .card {
-      width: 300px;
-      height: 300px;
-      background: lightgray;
-      position: relative;
-      cursor: pointer;
-    }
+        .card {
+            width: 100px;
+            height: 100px;
+            background: black;
+            cursor: pointer;
+            position: relative;
+        }
 
-    .card img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      /* アスペクト比を保って全体表示 */
-      background-color: black;
-      /* 黒で塗る（念のため） */
-      display: none;
-    }
+        .card img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: none;
+            background-color: black;
+        }
 
-    .card.revealed img,
-    .card.matched img {
-      display: block;
-    }
+        .card.revealed img,
+        .card.matched img {
+            display: block;
+        }
 
-    .card.matched {
-      border: 3px solid lightgreen;
-      cursor: default;
-    }
-  </style>
+        .card.matched {
+            border: 3px solid lime;
+            cursor: default;
+        }
+    </style>
 </head>
 
 <body>
-  <h1>シャドバ神経衰弱</h1>
-  <div class="grid" id="game"></div>
+    <h1>神経衰弱</h1>
+    <div class="grid" id="game"></div>
 
-  <script>
-    // カードのペア定義（画像ペアをグループIDで紐付け）
-    const cards = [
-      { img: 'images/a1.png', group: 'A' },
-      { img: 'images/a2.png', group: 'A' },
-      { img: 'images/b1.png', group: 'B' },
-      { img: 'images/b2.png', group: 'B' },
-    ];
+    <script>
+        const numPairs = 4; // ペア数をここで調整（例：4 → 画像8枚）
 
-    // ペアを2回ずつ入れて8枚にする
-    const fullDeck = [...cards];
-    const shuffled = fullDeck.sort(() => Math.random() - 0.5);
-
-    const game = document.getElementById('game');
-    let first = null, second = null, lock = false;
-
-    shuffled.forEach((cardData, index) => {
-      const card = document.createElement('div');
-      card.className = 'card';
-      card.dataset.group = cardData.group;
-
-      const img = document.createElement('img');
-      img.src = cardData.img;
-      card.appendChild(img);
-
-      card.addEventListener('click', () => {
-        if (lock || card.classList.contains('matched') || card.classList.contains('revealed')) return;
-
-        card.classList.add('revealed');
-
-        if (!first) {
-          first = card;
-        } else {
-          second = card;
-          lock = true;
-
-          setTimeout(() => {
-            if (first.dataset.group === second.dataset.group) {
-              first.classList.add('matched');
-              second.classList.add('matched');
-            } else {
-              first.classList.remove('revealed');
-              second.classList.remove('revealed');
-            }
-            first = null;
-            second = null;
-            lock = false;
-          }, 1000);
+        const cards = [];
+        for (let i = 0; i < numPairs; i++) {
+            const img1 = `images/${i * 2 + 1}.png`;
+            const img2 = `images/${i * 2 + 2}.png`;
+            cards.push({ group: `pair${i}`, img: img1 });
+            cards.push({ group: `pair${i}`, img: img2 });
         }
-      });
 
-      game.appendChild(card);
-    });
-  </script>
+        const shuffled = cards.sort(() => Math.random() - 0.5);
+        const game = document.getElementById('game');
+        let first = null, second = null, lock = false;
+
+        shuffled.forEach((cardData) => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.dataset.group = cardData.group;
+
+            const img = document.createElement('img');
+            img.src = cardData.img;
+            card.appendChild(img);
+
+            card.addEventListener('click', () => {
+                if (lock || card.classList.contains('matched') || card.classList.contains('revealed')) return;
+                card.classList.add('revealed');
+
+                if (!first) {
+                    first = card;
+                } else {
+                    second = card;
+                    lock = true;
+
+                    setTimeout(() => {
+                        if (first.dataset.group === second.dataset.group) {
+                            first.classList.add('matched');
+                            second.classList.add('matched');
+                        } else {
+                            first.classList.remove('revealed');
+                            second.classList.remove('revealed');
+                        }
+                        first = null;
+                        second = null;
+                        lock = false;
+                    }, 1000);
+                }
+            });
+
+            game.appendChild(card);
+        });
+    </script>
 </body>
 
 </html>
